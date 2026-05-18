@@ -10,6 +10,8 @@ import '../brick_breaker.dart';
 import '../config.dart';
 import 'ball.dart';
 import 'bat.dart';
+import 'double_bat.dart';
+import 'power_up.dart';
 
 class Brick extends RectangleComponent
     with CollisionCallbacks, HasGameReference<BrickBreaker> {
@@ -29,6 +31,12 @@ class Brick extends RectangleComponent
     PositionComponent other,
   ) {
     super.onCollisionStart(intersectionPoints, other);
+    
+    // 20% de probabilidad de generar un power-up
+    if (game.rand.nextDouble() < 0.2) {
+      _spawnPowerUp();
+    }
+    
     removeFromParent();
     game.score.value++;
 
@@ -36,6 +44,17 @@ class Brick extends RectangleComponent
       game.playState = PlayState.won;
       game.world.removeAll(game.world.children.query<Ball>());
       game.world.removeAll(game.world.children.query<Bat>());
+      game.world.removeAll(game.world.children.query<DoubleBat>());
+      game.world.removeAll(game.world.children.query<PowerUp>());
     }
+  }
+
+  void _spawnPowerUp() {
+    final powerUpType = PowerUpType.values[game.rand.nextInt(PowerUpType.values.length)];
+    final powerUp = PowerUp(
+      position: position,
+      powerUpType: powerUpType,
+    );
+    game.world.add(powerUp);
   }
 }

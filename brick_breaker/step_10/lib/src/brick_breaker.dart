@@ -63,7 +63,10 @@ class BrickBreaker extends FlameGame
 
     world.removeAll(world.children.query<Ball>());
     world.removeAll(world.children.query<Bat>());
+    world.removeAll(world.children.query<DoubleBat>());
+    world.removeAll(world.children.query<PowerUp>());
     world.removeAll(world.children.query<Brick>());
+    world.removeAll(world.children.query<PauseButton>());
 
     playState = PlayState.playing;
     score.value = 0;
@@ -85,6 +88,14 @@ class BrickBreaker extends FlameGame
         size: Vector2(batWidth, batHeight),
         cornerRadius: const Radius.circular(ballRadius / 2),
         position: Vector2(width / 2, height * 0.95),
+      ),
+    );
+
+    // Añadir botón de pausa
+    world.add(
+      PauseButton(
+        position: Vector2(width - 10, 10),
+        size: Vector2(50, 40),
       ),
     );
 
@@ -116,8 +127,18 @@ class BrickBreaker extends FlameGame
     switch (event.logicalKey) {
       case LogicalKeyboardKey.arrowLeft:
         world.children.query<Bat>().first.moveBy(-batStep);
+        // También mover la DoubleBat si existe
+        final doubleBat = world.children.query<DoubleBat>().firstOrNull;
+        if (doubleBat != null) {
+          doubleBat.moveBy(batStep);
+        }
       case LogicalKeyboardKey.arrowRight:
         world.children.query<Bat>().first.moveBy(batStep);
+        // También mover la DoubleBat si existe
+        final doubleBat = world.children.query<DoubleBat>().firstOrNull;
+        if (doubleBat != null) {
+          doubleBat.moveBy(-batStep);
+        }
       case LogicalKeyboardKey.space:
       case LogicalKeyboardKey.enter:
         startGame();

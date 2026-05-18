@@ -5,4 +5,7 @@
 export 'ball.dart';
 export 'bat.dart';
 export 'brick.dart';
+export 'double_bat.dart';
+export 'pause_button.dart';
 export 'play_area.dart';
+export 'power_up.dart';
